@@ -1,13 +1,48 @@
-import React from "react";
-import Navbar from "./components/Navbar/Navbar";
-import Products from "./components/Products/Products";
+import React, { useState, useEffect } from "react";
+import { commerce } from "./lib/commerce";
+import { Products, Navbar, Cart } from "./components";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 const App = () => {
+  const [products, setProducts] = useState([]);
+
+  const [cart, setCart] = useState({});
+  // fetch products created on ecommerce api
+  const fetchProducts = async () => {
+    //  we get response instead of data but we later destructure it into data
+    const { data } = await commerce.products.list();
+    setProducts(data);
+  };
+  // fetch cart from ecommerce api
+  const fetchCart = async () => {
+    const cart = await commerce.cart.retrieve();
+    setCart(cart);
+  };
+
+  const handleAddToCart = async (productId, quantity) => {
+    const item = await commerce.cart.add(productId, quantity);
+    setCart(item.cart);
+  };
+  useEffect(() => {
+    fetchProducts();
+    fetchCart();
+  }, []);
+  console.log(cart);
+
   return (
-    <div>
-      <Navbar />
-      <Products />
-    </div>
+    <Router>
+      <div>
+        <Navbar totalItems={cart.total_items} />
+        <Switch>
+          <Route exact path="/">
+            <Products products={products} onAddToCart={handleAddToCart} />
+          </Route>
+          <Route exact path="/cart">
+            <Cart cart={cart} />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 };
 

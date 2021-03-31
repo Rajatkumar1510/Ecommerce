@@ -15,6 +15,7 @@ export default makeStyles((theme) => ({
     flexGrow: 1,
     alignItems: "center",
     display: "flex",
+
     textDecoration: "none",
   },
   image: {
@@ -30,7 +31,7 @@ export default makeStyles((theme) => ({
     flexGrow: 1,
   },
   search: {
-    position: "relative",
+    position: "fixed",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     "&:hover": {
